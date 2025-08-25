@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Did You Know?</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      color: #ffdf6c;
+    }
+
+    .fact-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      max-width: 700px;
+      padding: 30px;
+      margin: 20px;
+      text-align: center;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .fact-container:hover {
+      transform: scale(1.02);
+    }
+
+    .fact {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .category {
+      display: inline-block;
+      background: #ffdf6c;
+      color: #333;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 12px 25px;
+      background: #ffdf6c;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-weight: bold;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #ffc107;
+    }
+
+    .dropdown-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    select {
+      padding: 12px 25px;
+      background: #ffdf6c;
+      color: #333;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    select:hover {
+      background: #ffc107;
+    }
+
+    .dropdown-wrapper::after {
+      content: "▼";
+      color: #333;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+
+    select option {
+      background: #ffdf6c;
+      color: #333;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    select option:hover {
+      background: #ffc107;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🤔 Did You Know?</h1>
+    <p>Simple but mind-blowing facts & questions</p>
+  </header>
+
+  <div class="dropdown-wrapper">
+    <select id="categoryFilter" onchange="filterFacts()">
+      <option value="All">All Categories</option>
+      <option value="Science">Science</option>
+      <option value="History">History</option>
+      <option value="Fun">Fun</option>
+      <option value="Space">Space</option>
+      <option value="Animals">Animals</option>
+      <option value="Mind-blowing">Mind-blowing</option>
+      <option value="Psychology">Psychology</option>
+      <option value="Humans">Humans</option>
+    </select>
+  </div>
+
+  <div class="fact-container" id="factBox">
+    <div class="category" id="factCategory">Science</div>
+    <div class="fact" id="factText">Did you know that honey never spoils? Archaeologists have found 3000-year-old jars of honey still edible!</div>
+    <button onclick="prevFact()">Previous</button>
+    <button onclick="newFact()">Next</button>
+  </div>
+
+  <footer>
+    &copy; 2025 Did You Know? | Designed with curiosity ✨
+  </footer>
+
+  <script>
+    const allFacts = [
+      // --- Science 25 facts ---
+      {category:"Science", text:"Did you know that bananas are berries, but strawberries are not?"},
+      {category:"Science", text:"Water can boil and freeze at the same time under the right pressure."},
+      {category:"Science", text:"Lightning strikes about 8 million times per day on Earth."},
+      {category:"Science", text:"DNA was first discovered in 1869 by Friedrich Miescher."},
+      {category:"Science", text:"Sharks existed before trees."},
+      {category:"Science", text:"There are more molecules in a glass of water than glasses of water in the ocean."},
+      {category:"Science", text:"Hot water freezes faster than cold water (Mpemba effect)."},
+      {category:"Science", text:"A teaspoon of neutron star would weigh 6 billion tons."},
+      {category:"Science", text:"The human body contains enough carbon to make 900 pencils."},
+      {category:"Science", text:"Oxygen was discovered in 1774 by Joseph Priestley."},
+      {category:"Science", text:"Plants can communicate through chemical signals."},
+      {category:"Science", text:"Some fungi can glow in the dark (bioluminescence)."},
+      {category:"Science", text:"Saturn could float in water due to low density."},
+      {category:"Science", text:"Sound travels faster in water than air."},
+      {category:"Science", text:"The Earth's magnetic field reverses every few hundred thousand years."},
+      {category:"Science", text:"The fastest animal on Earth is the peregrine falcon."},
+      {category:"Science", text:"Antibiotics do not work on viruses."},
+      {category:"Science", text:"Helium is lighter than air."},
+      {category:"Science", text:"The first vaccine was developed in 1796."},
+      {category:"Science", text:"The speed of light is 299,792 km per second."},
+      {category:"Science", text:"Some metals explode in contact with water."},
+      {category:"Science", text:"Your stomach lining regenerates every 3-4 days."},
+      {category:"Science", text:"Humans share 60% of DNA with bananas."},
+      {category:"Science", text:"Octopuses have three hearts."},
+      {category:"Science", text:"Lightning can reach temperatures of 30,000 K."},
+
+      // --- History 25 facts ---
+      {category:"History", text:"Cleopatra lived closer in time to the iPhone than the pyramids."},
+      {category:"History", text:"The Great Fire of London destroyed 80% of the city."},
+      {category:"History", text:"Napoleon was once attacked by a horde of bunnies."},
+      {category:"History", text:"Oxford University is older than the Aztec Empire."},
+      {category:"History", text:"The Eiffel Tower can be 15 cm taller in summer."},
+      {category:"History", text:"George Washington grew marijuana on his farm."},
+      {category:"History", text:"The shortest war in history lasted 38 minutes."},
+      {category:"History", text:"The Berlin Wall fell in 1989."},
+      {category:"History", text:"Leonardo da Vinci could write with both hands."},
+      {category:"History", text:"In 1835, the U.S. tried to buy Cuba from Spain."},
+      {category:"History", text:"Vatican City is the smallest country in the world."},
+      {category:"History", text:"The Library of Alexandria was destroyed multiple times."},
+      {category:"History", text:"The first Olympic Games were in 776 BC."},
+      {category:"History", text:"The Rosetta Stone helped decode Egyptian hieroglyphs."},
+      {category:"History", text:"The Great Wall of China is over 13,000 miles long."},
+      {category:"History", text:"Roman concrete is still stronger than modern concrete."},
+      {category:"History", text:"In medieval times, animals could be put on trial."},
+      {category:"History", text:"The Magna Carta was signed in 1215."},
+      {category:"History", text:"Vikings used urine to start fires."},
+      {category:"History", text:"The first vending machine was in ancient Greece."},
+      {category:"History", text:"Albert Einstein was offered the presidency of Israel."},
+      {category:"History", text:"The Titanic sank on its maiden voyage."},
+      {category:"History", text:"The first known recipe dates back 5,000 years."},
+      {category:"History", text:"Machu Picchu was built without mortar."},
+      {category:"History", text:"The first printing press was invented in 1440."},
+
+      // --- Fun 25 facts ---
+      {category:"Fun", text:"Octopuses have three hearts."},
+      {category:"Fun", text:"Wombat poop is cube-shaped."},
+      {category:"Fun", text:"Sloths can hold their breath longer than dolphins."},
+      {category:"Fun", text:"Honey never spoils."},
+      {category:"Fun", text:"A group of flamingos is called a 'flamboyance'."},
+      {category:"Fun", text:"Dolphins have names for each other."},
+      {category:"Fun", text:"Butterflies taste with their feet."},
+      {category:"Fun", text:"Elephants can’t jump."},
+      {category:"Fun", text:"Koalas sleep up to 22 hours a day."},
+      {category:"Fun", text:"Sharks existed before trees."},
+      {category:"Fun", text:"Pineapples take two years to grow."},
+      {category:"Fun", text:"Bananas are berries, but strawberries are not."},
+      {category:"Fun", text:"There are more stars than grains of sand on Earth."},
+      {category:"Fun", text:"Some cats are allergic to humans."},
+      {category:"Fun", text:"Rats laugh when tickled."},
+      {category:"Fun", text:"Sea otters hold hands while sleeping."},
+      {category:"Fun", text:"Dogs can smell fear."},
+      {category:"Fun", text:"A group of crows is called a murder."},
+      {category:"Fun", text:"Sloths can rotate their heads almost 360 degrees."},
+      {category:"Fun", text:"Penguins propose with pebbles."},
+      {category:"Fun", text:"A jiffy is an actual unit of time."},
+      {category:"Fun", text:"Turtles can breathe through their butts."},
+      {category:"Fun", text:"Cats have fewer toes on their back paws."},
+      {category:"Fun", text:"Rabbits can see behind themselves without turning their heads."},
+
+      // --- Space 25 facts ---
+      {category:"Space", text:"There are more stars in space than grains of sand on Earth."},
+      {category:"Space", text:"A day on Venus is longer than its year."},
+      {category:"Space", text:"Jupiter has the shortest day of all planets."},
+      {category:"Space", text:"Neutron stars can spin 600 times per second."},
+      {category:"Space", text:"One million Earths could fit inside the Sun."},
+      {category:"Space", text:"Mars has the largest volcano in the solar system."},
+      {category:"Space", text:"Pluto has a heart-shaped glacier."},
+      {category:"Space", text:"Black holes aren’t visible directly."},
+      {category:"Space", text:"The Milky Way is 100,000 light-years wide."},
+      {category:"Space", text:"A spoonful of a neutron star weighs 6 billion tons."},
+      {category:"Space", text:"Saturn has the lowest density of all planets."},
+      {category:"Space", text:"Space is completely silent."},
+      {category:"Space", text:"A day on Mercury lasts 59 Earth days."},
+      {category:"Space", text:"The Sun’s mass is 330,000 times that of Earth."},
+      {category:"Space", text:"There are more trees on Earth than stars in the Milky Way."},
+      {category:"Space", text:"Venus spins backwards compared to other planets."},
+      {category:"Space", text:"There are rogue planets that drift without a star."},
+      {category:"Space", text:"The Hubble telescope has been operating since 1990."},
+      {category:"Space", text:"Some moons may have underground oceans."},
+      {category:"Space", text:"Uranus rotates on its side."},
+      {category:"Space", text:"The Sun accounts for 99.86% of the solar system’s mass."},
+      {category:"Space", text:"Stars are born in nebulae."},
+      {category:"Space", text:"The Andromeda galaxy is approaching the Milky Way."},
+      {category:"Space", text:"Black holes can evaporate over time."},
+      {category:"Space", text:"Comets are made of ice and dust."},
+
+      // --- Animals 25 facts ---
+      {category:"Animals", text:"Sloths can hold their breath longer than dolphins."},
+      {category:"Animals", text:"Elephants are the only mammals that can't jump."},
+      {category:"Animals", text:"A group of flamingos is called a flamboyance."},
+      {category:"Animals", text:"Dolphins have names for each other."},
+      {category:"Animals", text:"Butterflies taste with their feet."},
+      {category:"Animals", text:"Koalas sleep up to 22 hours a day."},
+      {category:"Animals", text:"Sharks existed before trees."},
+      {category:"Animals", text:"Pineapples take two years to grow."},
+      {category:"Animals", text:"Bananas are berries, strawberries are not."},
+      {category:"Animals", text:"Some cats are allergic to humans."},
+      {category:"Animals", text:"Rats laugh when tickled."},
+      {category:"Animals", text:"Sea otters hold hands while sleeping."},
+      {category:"Animals", text:"Dogs can smell fear."},
+      {category:"Animals", text:"A group of crows is called a murder."},
+      {category:"Animals", text:"Sloths can rotate their heads almost 360 degrees."},
+      {category:"Animals", text:"Penguins propose with pebbles."},
+      {category:"Animals", text:"A jiffy is an actual unit of time."},
+      {category:"Animals", text:"Turtles can breathe through their butts."},
+      {category:"Animals", text:"Cats have fewer toes on their back paws."},
+      {category:"Animals", text:"Rabbits can see behind themselves without turning their heads."},
+      {category:"Animals", text:"Owls can rotate their necks 270 degrees."},
+      {category:"Animals", text:"Cows have best friends."},
+      {category:"Animals", text:"Frogs can freeze without dying."},
+      {category:"Animals", text:"A shrimp’s heart is in its head."},
+
+      // --- Mind-blowing 25 facts ---
+      {category:"Mind-blowing", text:"If you shuffle a deck of cards properly, the exact order has likely never existed before."},
+      {category:"Mind-blowing", text:"Time passes slightly faster at the top of a building than the bottom."},
+      {category:"Mind-blowing", text:"Your body contains about 37.2 trillion cells."},
+      {category:"Mind-blowing", text:"There are more possible iterations of a game of chess than atoms in the universe."},
+      {category:"Mind-blowing", text:"The universe is 13.8 billion years old."},
+      {category:"Mind-blowing", text:"A single strand of your hair can hold 100 grams."},
+      {category:"Mind-blowing", text:"Humans share 50% of DNA with bananas."},
+      {category:"Mind-blowing", text:"Your stomach gets a new lining every 3-4 days."},
+      {category:"Mind-blowing", text:"There are more stars in the universe than grains of sand on Earth."},
+      {category:"Mind-blowing", text:"Some metals explode when they touch water."},
+      {category:"Mind-blowing", text:"Water can boil and freeze at the same time under pressure."},
+      {category:"Mind-blowing", text:"Sharks existed before trees."},
+      {category:"Mind-blowing", text:"A teaspoon of neutron star would weigh 6 billion tons."},
+      {category:"Mind-blowing", text:"Hot water can freeze faster than cold water."},
+      {category:"Mind-blowing", text:"Lightning can reach 30,000 K."},
+      {category:"Mind-blowing", text:"Some fungi glow in the dark."},
+      {category:"Mind-blowing", text:"The Eiffel Tower can grow 15 cm in heat."},
+      {category:"Mind-blowing", text:"Cleopatra lived closer in time to the iPhone than pyramids."},
+      {category:"Mind-blowing", text:"Roman concrete is stronger than modern concrete."},
+      {category:"Mind-blowing", text:"Oxford University is older than the Aztec Empire."},
+      {category:"Mind-blowing", text:"Napoleon was once attacked by bunnies."},
+      {category:"Mind-blowing", text:"Vikings used urine to start fires."},
+      {category:"Mind-blowing", text:"Some cats are allergic to humans."},
+      {category:"Mind-blowing", text:"Your brain can generate enough electricity to power a small light bulb."},
+      {category:"Mind-blowing", text:"Octopuses have three hearts."},
+
+      // --- Psychology 25 facts ---
+      {category:"Psychology", text:"Humans are more likely to remember emotionally charged events."},
+      {category:"Psychology", text:"The placebo effect can trigger real physiological changes."},
+      {category:"Psychology", text:"Cognitive dissonance occurs when beliefs and actions conflict."},
+      {category:"Psychology", text:"Mirror neurons help us empathize with others."},
+      {category:"Psychology", text:"Our brains can process images faster than words."},
+      {category:"Psychology", text:"Short-term memory lasts only 20-30 seconds without rehearsal."},
+      {category:"Psychology", text:"Humans tend to favor familiar patterns."},
+      {category:"Psychology", text:"Decision fatigue reduces quality of decisions after long periods of decision-making."},
+      {category:"Psychology", text:"The Baader-Meinhof phenomenon makes you notice something more after learning it."},
+      {category:"Psychology", text:"People are more likely to conform in groups (Asch effect)."},
+      {category:"Psychology", text:"Stress can both enhance and impair memory."},
+      {category:"Psychology", text:"Optimism can improve physical health."},
+      {category:"Psychology", text:"Cognitive behavioral therapy is effective for anxiety."},
+      {category:"Psychology", text:"Social isolation can negatively affect mental health."},
+      {category:"Psychology", text:"Humans are hardwired for pattern recognition."},
+      {category:"Psychology", text:"Emotional intelligence influences relationships and success."},
+      {category:"Psychology", text:"The Zeigarnik effect causes incomplete tasks to be remembered better."},
+      {category:"Psychology", text:"Sleep plays a critical role in memory consolidation."},
+      {category:"Psychology", text:"The spotlight effect makes people overestimate how much others notice them."},
+      {category:"Psychology", text:"People tend to recall the first and last items in a list best (serial position effect)."},
+      {category:"Psychology", text:"Humans have a negativity bias in perception and memory."},
+      {category:"Psychology", text:"Motivation can be intrinsic or extrinsic."},
+      {category:"Psychology", text:"Social proof heavily influences behavior."},
+      {category:"Psychology", text:"Multitasking reduces efficiency and performance."},
+      {category:"Psychology", text:"Habit formation involves the basal ganglia."},
+
+      // --- Humans 25 facts ---
+      {category:"Humans", text:"Humans share 99.9% of DNA with each other."},
+      {category:"Humans", text:"The human body has about 37.2 trillion cells."},
+      {category:"Humans", text:"Your brain generates approximately 20 watts of electrical power."},
+      {category:"Humans", text:"Humans have unique fingerprints."},
+      {category:"Humans", text:"Humans are the only animals that blush."},
+      {category:"Humans", text:"The average human heart beats 100,000 times a day."},
+      {category:"Humans", text:"Humans shed about 600,000 particles of skin every hour."},
+      {category:"Humans", text:"The strongest muscle in the human body is the masseter (jaw muscle)."},
+      {category:"Humans", text:"Humans can distinguish over a trillion different smells."},
+      {category:"Humans", text:"Human bones are stronger than concrete."},
+      {category:"Humans", text:"Humans have about 5 million hair follicles."},
+      {category:"Humans", text:"The human nose can detect more than 1 trillion scents."},
+      {category:"Humans", text:"Your stomach produces a new lining every 3-4 days."},
+      {category:"Humans", text:"Human bones make up about 15% of body weight."},
+      {category:"Humans", text:"Humans have the longest childhood of any species."},
+      {category:"Humans", text:"The human brain uses 20% of the body’s oxygen supply."},
+      {category:"Humans", text:"Human bones are constantly being replaced in a process called remodeling."},
+      {category:"Humans", text:"Humans are bioluminescent; we emit light, but too weak to see."},
+      {category:"Humans", text:"Humans produce about 1-1.5 liters of saliva daily."},
+      {category:"Humans", text:"The average adult has 2-5 million sweat glands."},
+      {category:"Humans", text:"Humans blink about 15-20 times per minute."},
+      {category:"Humans", text:"The human liver has over 500 functions."},
+      {category:"Humans", text:"Humans can distinguish more than 10 million colors."},
+      {category:"Humans", text:"Human teeth are as strong as shark teeth."},
+      {category:"Humans", text:"The human body contains enough iron to make a 3-inch nail."}
+    ];
+
+    let filteredFacts = [...allFacts];
+    let currentIndex = Math.floor(Math.random() * filteredFacts.length);
+
+    function displayFact(index) {
+      const fact = filteredFacts[index];
+      document.getElementById("factText").textContent = fact.text;
+      document.getElementById("factCategory").textContent = fact.category;
+    }
+
+    function newFact() {
+      currentIndex = (currentIndex + 1) % filteredFacts.length;
+      displayFact(currentIndex);
+    }
+
+    function prevFact() {
+      currentIndex = (currentIndex - 1 + filteredFacts.length) % filteredFacts.length;
+      displayFact(currentIndex);
+    }
+
+    function filterFacts() {
+      const category = document.getElementById("categoryFilter").value;
+      filteredFacts = category === "All" ? [...allFacts] : allFacts.filter(f => f.category === category);
+      currentIndex = Math.floor(Math.random() * filteredFacts.length);
+      displayFact(currentIndex);
+    }
+
+    displayFact(currentIndex);
+  </script>
+</body>
+</html>
